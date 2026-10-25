@@ -1,0 +1,12 @@
+target/
+shitc.exe
+shitc.c
+shitc.obj
+build_shitc.bat
+*.pdb
+test_io_file.txt
+test_rename_dir/
+test_count_dir/
+test_temp.shit
+__pycache__/
+*.pyc

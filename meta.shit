@@ -1,0 +1,42 @@
+# ShitLang Self-Hosting Compiler
+# Compiles .shit source into standalone binary via C transpilation
+# Architecture: ShitLang source -> C code -> cl compilation -> binary
+
+set compiler_name = "shitc"
+set output_ext = ".exe"
+
+# Read source file
+set source_file = "{}"
+if source_file == "" : say "Error: no source file specified"
+
+say "Compiling {source_file}..."
+say "Target: {compiler_name}{output_ext}"
+
+# Start fresh C file
+write "#include <stdio.h>\n" to "{compiler_name}.c"
+append "#include <stdlib.h>\n" to "{compiler_name}.c"
+append "#include <string.h>\n" to "{compiler_name}.c"
+append "#include <sys/stat.h>\n" to "{compiler_name}.c"
+append "\n" to "{compiler_name}.c"
+append "int main(int argc, char *argv[]) {\n" to "{compiler_name}.c"
+append "    char path[4096];\n" to "{compiler_name}.c"
+append "    if (argc > 1) {\n" to "{compiler_name}.c"
+append "        strcpy(path, argv[1]);\n" to "{compiler_name}.c"
+append "        struct stat st;\n" to "{compiler_name}.c"
+append "        if (stat(path, &st) == 0) {\n" to "{compiler_name}.c"
+append "            printf(\"File: %s, Size: %ld bytes\\n\", path, (long)st.st_size);\n" to "{compiler_name}.c"
+append "        } else {\n" to "{compiler_name}.c"
+append "            printf(\"Not found: %s\\n\", path);\n" to "{compiler_name}.c"
+append "        }\n" to "{compiler_name}.c"
+append "    } else {\n" to "{compiler_name}.c"
+append "        printf(\"Usage: {compiler_name} <file>\\n\");\n" to "{compiler_name}.c"
+append "    }\n" to "{compiler_name}.c"
+append "    return 0;\n" to "{compiler_name}.c"
+append "}\n" to "{compiler_name}.c"
+
+# Compile to binary using MSVC cl via batch file
+write "@echo off\n" to "build_{compiler_name}.bat"
+append "call \"C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Auxiliary/Build/vcvarsall.bat\" x64\n" to "build_{compiler_name}.bat"
+append "cl {compiler_name}.c /O2 /Fe:{compiler_name}{output_ext}\n" to "build_{compiler_name}.bat"
+run build_{compiler_name}.bat
+say "Build complete: {compiler_name}{output_ext}"

@@ -1,0 +1,10 @@
+[package]
+name = "shitlang"
+version = "1.0.0"
+edition = "2021"
+
+[[bin]]
+name = "shitlang"
+path = "src/main.rs"
+
+[dependencies]
